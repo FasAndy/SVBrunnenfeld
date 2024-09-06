@@ -22,6 +22,7 @@
             padding: 10px 0;
             display: flex;
             justify-content: space-between;
+            flex-wrap: wrap;
         }
         nav a {
             color: white;
@@ -84,7 +85,8 @@
             margin: 15% auto;
             padding: 20px;
             border: 1px solid #e67e22;
-            width: 50%;
+            width: 90%;
+            max-width: 500px;
             border-radius: 10px;
         }
         .close {
@@ -126,7 +128,7 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        /* Updated team member styling */
+        /* Team member styling */
         .team-member {
             border: 1px solid #e67e22;
             padding: 10px;
@@ -134,13 +136,13 @@
             border-radius: 10px;
             display: flex;
             align-items: center;
-            width: 50%;
+            width: 100%; /* Default to 100% width on mobile */
             position: relative;
         }
         .team-member img {
             border-radius: 50%;
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             object-fit: cover;
             margin-right: 10px;
         }
@@ -159,6 +161,34 @@
         }
         .edit-btn:hover, .delete-btn:hover {
             color: #333;
+        }
+        
+        /* Media Queries for responsiveness */
+        @media (min-width: 600px) {
+            .team-member {
+                width: 50%; /* On larger screens, boxes take 50% of the width */
+            }
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            .add-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+            .team-member {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .team-member img {
+                margin-bottom: 10px;
+                width: 70px;
+                height: 70px;
+            }
         }
     </style>
 </head>
@@ -231,13 +261,10 @@
             document.getElementById('birthYear').value = member.birthYear;
             document.getElementById('nickname').value = member.nickname;
             document.getElementById('memberIndex').value = index;
-            document.getElementById('add-member-title').textContent = "Edit Team Member";
             editIndex = index;
         } else {
-            // Set the form to add mode
+            // Reset the form for adding a new member
             document.getElementById('addMemberForm').reset();
-            document.getElementById('memberIndex').value = '';
-            document.getElementById('add-member-title').textContent = "Add Team Member";
             editIndex = null;
         }
     }
@@ -247,25 +274,25 @@
         document.getElementById("addMemberModal").style.display = "none";
     }
 
-    // Function to handle adding or editing a team member
+    // Function to save or update a team member
     function saveMember() {
         const name = document.getElementById('name').value;
         const birthYear = document.getElementById('birthYear').value;
         const nickname = document.getElementById('nickname').value;
-        const pictureInput = document.getElementById('picture').files[0];
+        const pictureInput = document.getElementById('picture');
+        const reader = new FileReader();
 
-        let picture = '';
-        if (pictureInput) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                picture = e.target.result;
+        // If a picture is uploaded, read it as base64
+        if (pictureInput.files && pictureInput.files[0]) {
+            reader.onload = function (e) {
+                const picture = e.target.result;
                 if (editIndex !== null) {
                     updateMember(editIndex, name, birthYear, nickname, picture);
                 } else {
                     addNewMember(name, birthYear, nickname, picture);
                 }
             };
-            reader.readAsDataURL(pictureInput);
+            reader.readAsDataURL(pictureInput.files[0]);
         } else {
             if (editIndex !== null) {
                 updateMember(editIndex, name, birthYear, nickname, members[editIndex].picture);

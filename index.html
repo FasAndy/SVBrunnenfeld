@@ -65,7 +65,6 @@
         <a href="index.html" id="nav-home">Home</a>
         <a href="history.html" id="nav-history">History</a>
         <a href="team.html" id="nav-team">Team</a>
-        <a href="pitch.html" id="nav-pitch">Pitch</a>
     </div>
     <div class="lang-select">
         <button class="language-button" onclick="setLanguage('en')">English</button>
@@ -85,7 +84,6 @@
             navHome: "Home",
             navHistory: "History",
             navTeam: "Team",
-            navPitch: "Pitch",
             welcomeTitle: "Welcome to Your Football Team Website",
             welcomeText: "Click on the links above to learn more about our team!",
         },
@@ -94,7 +92,6 @@
             navHome: "Startseite",
             navHistory: "Geschichte",
             navTeam: "Mannschaft",
-            navPitch: "Spielfeld",
             welcomeTitle: "Willkommen auf der Website Ihres Fußballteams",
             welcomeText: "Klicken Sie auf die obenstehenden Links, um mehr über unser Team zu erfahren!",
         }
@@ -105,7 +102,6 @@
         document.getElementById('nav-home').textContent = translations[lang].navHome;
         document.getElementById('nav-history').textContent = translations[lang].navHistory;
         document.getElementById('nav-team').textContent = translations[lang].navTeam;
-        document.getElementById('nav-pitch').textContent = translations[lang].navPitch;
         document.getElementById('welcome-title').textContent = translations[lang].welcomeTitle;
         document.getElementById('welcome-text').textContent = translations[lang].welcomeText;
     }

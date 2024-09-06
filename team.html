@@ -197,118 +197,98 @@
 </div>
 
 <script>
-    let members = JSON.parse(localStorage.getItem('members')) || [];
+    const translations = {
+        en: {
+            title: "Your Football Team",
+            navHome: "Home",
+            navHistory: "History",
+            navTeam: "Team",
+            navPitch: "Pitch",
+            teamTitle: "Team",
+            addMemberTitle: "Add Team Member",
+            labelName: "Name:",
+            labelBirthYear: "Year of Birth:",
+            labelNickname: "Nickname:",
+            labelPicture: "Upload Picture:",
+            submitBtn: "Add Member"
+        },
+        de: {
+            title: "Dein Fußballteam",
+            navHome: "Startseite",
+            navHistory: "Geschichte",
+            navTeam: "Mannschaft",
+            navPitch: "Spielfeld",
+            teamTitle: "Mannschaft",
+            addMemberTitle: "Mannschaftsmitglied hinzufügen",
+            labelName: "Name:",
+            labelBirthYear: "Geburtsjahr:",
+            labelNickname: "Spitzname:",
+            labelPicture: "Bild hochladen:",
+            submitBtn: "Mitglied hinzufügen"
+        }
+    };
 
-    function openModal() {
-        document.getElementById("addMemberModal").style.display = "block";
-        document.getElementById("submit-btn").innerText = "Add Member";
-        document.getElementById("addMemberForm").reset();
-        document.getElementById("addMemberForm").onsubmit = addMember;
+    function setLanguage(lang) {
+        document.getElementById('title').textContent = translations[lang].title;
+        document.getElementById('nav-home').textContent = translations[lang].navHome;
+        document.getElementById('nav-history').textContent = translations[lang].navHistory;
+        document.getElementById('nav-team').textContent = translations[lang].navTeam;
+        document.getElementById('nav-pitch').textContent = translations[lang].navPitch;
+        document.getElementById('team-title').textContent = translations[lang].teamTitle;
+        document.getElementById('add-member-title').textContent = translations[lang].addMemberTitle;
+        document.getElementById('label-name').textContent = translations[lang].labelName;
+        document.getElementById('label-birthYear').textContent = translations[lang].labelBirthYear;
+        document.getElementById('label-nickname').textContent = translations[lang].labelNickname;
+        document.getElementById('label-picture').textContent = translations[lang].labelPicture;
+        document.getElementById('submit-btn').textContent = translations[lang].submitBtn;
     }
 
+    // Function to open the modal
+    function openModal() {
+        document.getElementById("addMemberModal").style.display = "block";
+    }
+
+    // Function to close the modal
     function closeModal() {
         document.getElementById("addMemberModal").style.display = "none";
     }
 
-    function addMember(event) {
-        event.preventDefault();
-        
+    // Function to handle the form submission and add a team member
+    function addMember() {
         const name = document.getElementById('name').value;
         const birthYear = document.getElementById('birthYear').value;
         const nickname = document.getElementById('nickname').value;
         const picture = document.getElementById('picture').files[0];
 
         if (!name || !birthYear || !nickname || !picture) {
-            alert("All fields are required.");
+            alert("All fields are required!");
             return false;
         }
 
         const reader = new FileReader();
-        reader.onload = function (e) {
-            const memberId = Date.now().toString();
-            const newMember = {
-                id: memberId,
-                name,
-                birthYear,
-                nickname,
-                picture: e.target.result
-            };
-
-            members.push(newMember);
-            saveAndRenderMembers();
-            closeModal();
-        };
-        reader.readAsDataURL(picture);
-    }
-
-    function saveAndRenderMembers() {
-        localStorage.setItem('members', JSON.stringify(members));
-        renderMembers();
-    }
-
-    function renderMembers() {
-        const teamList = document.getElementById('team-list');
-        teamList.innerHTML = ''; // Clear the current list
-
-        members.forEach(member => {
+        reader.onload = function(e) {
+            const teamList = document.getElementById('team-list');
             const memberDiv = document.createElement('div');
             memberDiv.classList.add('team-member');
-            memberDiv.innerHTML = `
-                <img src="${member.picture}" alt="${member.name}">
-                <p><strong>Name:</strong> ${member.name}</p>
-                <p><strong>Year of Birth:</strong> ${member.birthYear}</p>
-                <p><strong>Nickname:</strong> ${member.nickname}</p>
-                <button onclick="editMember('${member.id}')">Edit</button>
-                <button onclick="deleteMember('${member.id}')">Delete</button>
-            `;
+
+            const img = document.createElement('img');
+            img.src = e.target.result;
+
+            const memberInfo = document.createElement('div');
+            memberInfo.innerHTML = `<strong>${name}</strong> (${birthYear})<br>Nickname: ${nickname}`;
+
+            memberDiv.appendChild(img);
+            memberDiv.appendChild(memberInfo);
             teamList.appendChild(memberDiv);
-        });
+
+            closeModal(); // Close the modal after adding the member
+        };
+
+        reader.readAsDataURL(picture); // Read the picture file as a data URL
+        return false; // Prevent form submission
     }
-
-    function editMember(id) {
-        const member = members.find(m => m.id === id);
-        if (member) {
-            document.getElementById("name").value = member.name;
-            document.getElementById("birthYear").value = member.birthYear;
-            document.getElementById("nickname").value = member.nickname;
-
-            openModal();
-            document.getElementById("submit-btn").innerText = "Save Changes";
-
-            document.getElementById("addMemberForm").onsubmit = function (e) {
-                e.preventDefault();
-                member.name = document.getElementById("name").value;
-                member.birthYear = document.getElementById("birthYear").value;
-                member.nickname = document.getElementById("nickname").value;
-
-                const pictureInput = document.getElementById("picture").files[0];
-                if (pictureInput) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        member.picture = e.target.result;
-                        saveAndRenderMembers();
-                        closeModal();
-                    };
-                    reader.readAsDataURL(pictureInput);
-                } else {
-                    saveAndRenderMembers();
-                    closeModal();
-                }
-            };
-        }
-    }
-
-    function deleteMember(id) {
-        members = members.filter(m => m.id !== id);
-        saveAndRenderMembers();
-    }
-
-    window.onload = function () {
-        renderMembers();
-    };
 
 </script>
-
 
 </body>
 </html>

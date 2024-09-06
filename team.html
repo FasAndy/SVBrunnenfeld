@@ -16,10 +16,13 @@
             color: #e67e22; 
             text-align: center; 
             padding: 10px 0; 
+            position: relative;
         }
         nav {
             background-color: #333;
             padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
         }
         nav a {
             color: white;
@@ -30,12 +33,24 @@
         nav a:hover {
             background-color: #e67e22;
         }
+        .lang-select {
+            margin-right: 20px;
+        }
         section {
             padding: 20px;
         }
         .section-title {
             font-size: 1.5em;
             margin-top: 20px;
+        }
+        .language-button {
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin: 5px;
+            border-radius: 5px;
         }
         /* Style for the "+" button */
         .add-btn {
@@ -129,18 +144,24 @@
 <body>
 
 <header>
-    <h1>Your Football Team</h1>
+    <h1 id="title">Your Football Team</h1>
 </header>
 
 <nav>
-    <a href="index.html">Home</a>
-    <a href="history.html">History</a>
-    <a href="team.html">Team</a>
-    <a href="pitch.html">Pitch</a>
+    <div>
+        <a href="index.html" id="nav-home">Home</a>
+        <a href="history.html" id="nav-history">History</a>
+        <a href="team.html" id="nav-team">Team</a>
+        <a href="pitch.html" id="nav-pitch">Pitch</a>
+    </div>
+    <div class="lang-select">
+        <button class="language-button" onclick="setLanguage('en')">English</button>
+        <button class="language-button" onclick="setLanguage('de')">Deutsch</button>
+    </div>
 </nav>
 
 <section>
-    <h2 class="section-title">Team</h2>
+    <h2 class="section-title" id="team-title">Team</h2>
     <div id="team-list">
         <!-- New team members will be added here -->
     </div>
@@ -152,30 +173,76 @@
 <div id="addMemberModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
-        <h2>Add Team Member</h2>
+        <h2 id="add-member-title">Add Team Member</h2>
         <form id="addMemberForm" onsubmit="return addMember()">
             <div class="form-input">
-                <label for="name">Name:</label>
+                <label for="name" id="label-name">Name:</label>
                 <input type="text" id="name" name="name" required>
             </div>
             <div class="form-input">
-                <label for="birthYear">Year of Birth:</label>
+                <label for="birthYear" id="label-birthYear">Year of Birth:</label>
                 <input type="number" id="birthYear" name="birthYear" required>
             </div>
             <div class="form-input">
-                <label for="nickname">Nickname:</label>
+                <label for="nickname" id="label-nickname">Nickname:</label>
                 <input type="text" id="nickname" name="nickname" required>
             </div>
             <div class="form-input">
-                <label for="picture">Upload Picture:</label>
+                <label for="picture" id="label-picture">Upload Picture:</label>
                 <input type="file" id="picture" name="picture" accept="image/*" required>
             </div>
-            <button type="submit" class="submit-btn">Add Member</button>
+            <button type="submit" class="submit-btn" id="submit-btn">Add Member</button>
         </form>
     </div>
 </div>
 
 <script>
+    const translations = {
+        en: {
+            title: "Your Football Team",
+            navHome: "Home",
+            navHistory: "History",
+            navTeam: "Team",
+            navPitch: "Pitch",
+            teamTitle: "Team",
+            addMemberTitle: "Add Team Member",
+            labelName: "Name:",
+            labelBirthYear: "Year of Birth:",
+            labelNickname: "Nickname:",
+            labelPicture: "Upload Picture:",
+            submitBtn: "Add Member"
+        },
+        de: {
+            title: "Dein Fußballteam",
+            navHome: "Startseite",
+            navHistory: "Geschichte",
+            navTeam: "Mannschaft",
+            navPitch: "Spielfeld",
+            teamTitle: "Mannschaft",
+            addMemberTitle: "Mannschaftsmitglied hinzufügen",
+            labelName: "Name:",
+            labelBirthYear: "Geburtsjahr:",
+            labelNickname: "Spitzname:",
+            labelPicture: "Bild hochladen:",
+            submitBtn: "Mitglied hinzufügen"
+        }
+    };
+
+    function setLanguage(lang) {
+        document.getElementById('title').textContent = translations[lang].title;
+        document.getElementById('nav-home').textContent = translations[lang].navHome;
+        document.getElementById('nav-history').textContent = translations[lang].navHistory;
+        document.getElementById('nav-team').textContent = translations[lang].navTeam;
+        document.getElementById('nav-pitch').textContent = translations[lang].navPitch;
+        document.getElementById('team-title').textContent = translations[lang].teamTitle;
+        document.getElementById('add-member-title').textContent = translations[lang].addMemberTitle;
+        document.getElementById('label-name').textContent = translations[lang].labelName;
+        document.getElementById('label-birthYear').textContent = translations[lang].labelBirthYear;
+        document.getElementById('label-nickname').textContent = translations[lang].labelNickname;
+        document.getElementById('label-picture').textContent = translations[lang].labelPicture;
+        document.getElementById('submit-btn').textContent = translations[lang].submitBtn;
+    }
+
     // Function to open the modal
     function openModal() {
         document.getElementById("addMemberModal").style.display = "block";
@@ -191,51 +258,18 @@
         const name = document.getElementById('name').value;
         const birthYear = document.getElementById('birthYear').value;
         const nickname = document.getElementById('nickname').value;
-        const pictureInput = document.getElementById('picture');
-        const picture = pictureInput.files[0];
+        const picture = document.getElementById('picture').files[0];
 
-        if (name && birthYear && nickname && picture) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const teamList = document.getElementById("team-list");
-
-                const memberDiv = document.createElement('div');
-                memberDiv.classList.add('team-member');
-
-                const img = document.createElement('img');
-                img.src = e.target.result;
-
-                const memberInfo = document.createElement('p');
-                memberInfo.innerHTML = `<strong>Name:</strong> ${name} <br> 
-                                        <strong>Year of Birth:</strong> ${birthYear} <br> 
-                                        <strong>Nickname:</strong> ${nickname}`;
-
-                memberDiv.appendChild(img);
-                memberDiv.appendChild(memberInfo);
-                teamList.appendChild(memberDiv);
-
-                // Clear the form and close the modal
-                document.getElementById('addMemberForm').reset();
-                closeModal();
-            };
-
-            reader.readAsDataURL(picture); // Read the picture as data URL to display
-        } else {
-            alert("Please fill in all fields.");
+        if (!name || !birthYear || !nickname || !picture) {
+            alert("All fields are required.");
             return false;
         }
 
-        return false; // Prevent the form from submitting the traditional way
-    }
-
-    // Close the modal if the user clicks outside of it
-    window.onclick = function(event) {
-        const modal = document.getElementById("addMemberModal");
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-</script>
-
-</body>
-</html>
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const newMember = document.createElement('div');
+            newMember.classList.add('team-member');
+            newMember.innerHTML = `
+                <img src="${e.target.result}" alt="${name}">
+                <p><strong>Name:</strong> ${name}</p>
+                <p><strong>Year of Birth:</strong>

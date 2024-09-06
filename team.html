@@ -132,12 +132,31 @@
             padding: 10px;
             margin-top: 10px;
             border-radius: 10px;
+            display: flex;
+            align-items: center;
         }
         .team-member img {
             border-radius: 50%;
             width: 100px;
             height: 100px;
             object-fit: cover;
+            margin-right: 10px;
+        }
+        .member-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 10px;
+        }
+        .edit-btn, .delete-btn {
+            background-color: #e67e22;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .delete-btn {
+            background-color: red;
         }
     </style>
 </head>
@@ -163,18 +182,18 @@
 <section>
     <h2 class="section-title" id="team-title">Team</h2>
     <div id="team-list">
-        <!-- New team members will be added here -->
+        <!-- Team members will be dynamically added here -->
     </div>
-    <!-- Round "+" button -->
     <button class="add-btn" onclick="openModal()">+</button>
 </section>
 
-<!-- Modal for adding a team member -->
+<!-- Modal for adding/editing a team member -->
 <div id="addMemberModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
         <h2 id="add-member-title">Add Team Member</h2>
-        <form id="addMemberForm" onsubmit="return addMember()">
+        <form id="addMemberForm" onsubmit="return saveMember()">
+            <input type="hidden" id="memberIndex">
             <div class="form-input">
                 <label for="name" id="label-name">Name:</label>
                 <input type="text" id="name" name="name" required>
@@ -189,14 +208,121 @@
             </div>
             <div class="form-input">
                 <label for="picture" id="label-picture">Upload Picture:</label>
-                <input type="file" id="picture" name="picture" accept="image/*" required>
+                <input type="file" id="picture" name="picture" accept="image/*">
             </div>
-            <button type="submit" class="submit-btn" id="submit-btn">Add Member</button>
+            <button type="submit" class="submit-btn" id="submit-btn">Save Member</button>
         </form>
     </div>
 </div>
 
 <script>
+    const members = []; // Array to store members
+    let editIndex = null; // Variable to track the index of the member being edited
+
+    // Function to open the modal for adding or editing a member
+    function openModal(editing = false, index = null) {
+        document.getElementById("addMemberModal").style.display = "block";
+        if (editing) {
+            // Set the form to edit mode
+            const member = members[index];
+            document.getElementById('name').value = member.name;
+            document.getElementById('birthYear').value = member.birthYear;
+            document.getElementById('nickname').value = member.nickname;
+            document.getElementById('memberIndex').value = index;
+            document.getElementById('add-member-title').textContent = "Edit Team Member";
+            editIndex = index;
+        } else {
+            // Set the form to add mode
+            document.getElementById('addMemberForm').reset();
+            document.getElementById('memberIndex').value = '';
+            document.getElementById('add-member-title').textContent = "Add Team Member";
+            editIndex = null;
+        }
+    }
+
+    // Function to close the modal
+    function closeModal() {
+        document.getElementById("addMemberModal").style.display = "none";
+    }
+
+    // Function to handle adding or editing a team member
+    function saveMember() {
+        const name = document.getElementById('name').value;
+        const birthYear = document.getElementById('birthYear').value;
+        const nickname = document.getElementById('nickname').value;
+        const pictureInput = document.getElementById('picture').files[0];
+
+        let picture = '';
+        if (pictureInput) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                picture = e.target.result;
+                if (editIndex !== null) {
+                    updateMember(editIndex, name, birthYear, nickname, picture);
+                } else {
+                    addNewMember(name, birthYear, nickname, picture);
+                }
+            };
+            reader.readAsDataURL(pictureInput);
+        } else {
+            if (editIndex !== null) {
+                updateMember(editIndex, name, birthYear, nickname, members[editIndex].picture);
+            } else {
+                addNewMember(name, birthYear, nickname, '');
+            }
+        }
+
+        closeModal(); // Close the modal after saving
+        return false; // Prevent form submission
+    }
+
+    // Function to add a new team member
+    function addNewMember(name, birthYear, nickname, picture) {
+        const member = { name, birthYear, nickname, picture };
+        members.push(member);
+        displayMembers();
+    }
+
+    // Function to update an existing team member
+    function updateMember(index, name, birthYear, nickname, picture) {
+        members[index] = { name, birthYear, nickname, picture };
+        displayMembers();
+    }
+
+    // Function to delete a team member
+    function deleteMember(index) {
+        members.splice(index, 1);
+        displayMembers();
+    }
+
+    // Function to display the team members
+    function displayMembers() {
+        const teamList = document.getElementById('team-list');
+        teamList.innerHTML = ''; // Clear the list
+        members.forEach((member, index) => {
+            const memberDiv = document.createElement('div');
+            memberDiv.classList.add('team-member');
+
+            const img = document.createElement('img');
+            img.src = member.picture || 'placeholder.jpg'; // Fallback to placeholder image
+
+            const memberInfo = document.createElement('div');
+            memberInfo.innerHTML = `<strong>${member.name}</strong> (${member.birthYear})<br>Nickname: ${member.nickname}`;
+
+            const actionsDiv = document.createElement('div');
+            actionsDiv.classList.add('member-actions');
+            actionsDiv.innerHTML = `
+                <button class="edit-btn" onclick="openModal(true, ${index})">Edit</button>
+                <button class="delete-btn" onclick="deleteMember(${index})">Delete</button>
+            `;
+
+            memberDiv.appendChild(img);
+            memberDiv.appendChild(memberInfo);
+            memberDiv.appendChild(actionsDiv);
+            teamList.appendChild(memberDiv);
+        });
+    }
+
     const translations = {
         en: {
             title: "Your Football Team",
@@ -210,7 +336,7 @@
             labelBirthYear: "Year of Birth:",
             labelNickname: "Nickname:",
             labelPicture: "Upload Picture:",
-            submitBtn: "Add Member"
+            submitBtn: "Save Member"
         },
         de: {
             title: "Dein Fußballteam",
@@ -224,7 +350,7 @@
             labelBirthYear: "Geburtsjahr:",
             labelNickname: "Spitzname:",
             labelPicture: "Bild hochladen:",
-            submitBtn: "Mitglied hinzufügen"
+            submitBtn: "Mitglied speichern"
         }
     };
 
@@ -242,164 +368,6 @@
         document.getElementById('label-picture').textContent = translations[lang].labelPicture;
         document.getElementById('submit-btn').textContent = translations[lang].submitBtn;
     }
-
-    // Function to open the modal
-    function openModal() {
-        document.getElementById("addMemberModal").style.display = "block";
-    }
-
-    // Function to close the modal
-    function closeModal() {
-        document.getElementById("addMemberModal").style.display = "none";
-    }
-
-    // Function to handle the form submission and add a team member
-    function addMember() {
-        const name = document.getElementById('name').value;
-        const birthYear = document.getElementById('birthYear').value;
-        const nickname = document.getElementById('nickname').value;
-        const picture = document.getElementById('picture').files[0];
-
-        if (!name || !birthYear || !nickname || !picture) {
-            alert("All fields are required!");
-            return false;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const teamList = document.getElementById('team-list');
-            const memberDiv = document.createElement('div');
-            memberDiv.classList.add('team-member');
-
-            const img = document.createElement('img');
-            img.src = e.target.result;
-
-            const memberInfo = document.createElement('div');
-            memberInfo.innerHTML = `<strong>${name}</strong> (${birthYear})<br>Nickname: ${nickname}`;
-
-            memberDiv.appendChild(img);
-            memberDiv.appendChild(memberInfo);
-            teamList.appendChild(memberDiv);
-
-            closeModal(); // Close the modal after adding the member
-        };
-
-        reader.readAsDataURL(picture); // Read the picture file as a data URL
-        return false; // Prevent form submission
-    }
-
-</script>
-<script>
-    let members = JSON.parse(localStorage.getItem('members')) || [];
-
-    function openModal() {
-        document.getElementById("addMemberModal").style.display = "block";
-        document.getElementById("submit-btn").innerText = "Add Member";
-        document.getElementById("addMemberForm").reset();
-        document.getElementById("addMemberForm").onsubmit = addMember;
-    }
-
-    function closeModal() {
-        document.getElementById("addMemberModal").style.display = "none";
-    }
-
-    function addMember(event) {
-        event.preventDefault();
-        
-        const name = document.getElementById('name').value;
-        const birthYear = document.getElementById('birthYear').value;
-        const nickname = document.getElementById('nickname').value;
-        const picture = document.getElementById('picture').files[0];
-
-        if (!name || !birthYear || !nickname || !picture) {
-            alert("All fields are required.");
-            return false;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const memberId = Date.now().toString();
-            const newMember = {
-                id: memberId,
-                name,
-                birthYear,
-                nickname,
-                picture: e.target.result
-            };
-
-            members.push(newMember);
-            saveAndRenderMembers();
-            closeModal();
-        };
-        reader.readAsDataURL(picture);
-    }
-
-    function saveAndRenderMembers() {
-        localStorage.setItem('members', JSON.stringify(members));
-        renderMembers();
-    }
-
-    function renderMembers() {
-        const teamList = document.getElementById('team-list');
-        teamList.innerHTML = ''; // Clear the current list
-
-        members.forEach(member => {
-            const memberDiv = document.createElement('div');
-            memberDiv.classList.add('team-member');
-            memberDiv.innerHTML = `
-                <img src="${member.picture}" alt="${member.name}">
-                <p><strong>Name:</strong> ${member.name}</p>
-                <p><strong>Year of Birth:</strong> ${member.birthYear}</p>
-                <p><strong>Nickname:</strong> ${member.nickname}</p>
-                <button onclick="editMember('${member.id}')">Edit</button>
-                <button onclick="deleteMember('${member.id}')">Delete</button>
-            `;
-            teamList.appendChild(memberDiv);
-        });
-    }
-
-    function editMember(id) {
-        const member = members.find(m => m.id === id);
-        if (member) {
-            document.getElementById("name").value = member.name;
-            document.getElementById("birthYear").value = member.birthYear;
-            document.getElementById("nickname").value = member.nickname;
-
-            openModal();
-            document.getElementById("submit-btn").innerText = "Save Changes";
-
-            document.getElementById("addMemberForm").onsubmit = function (e) {
-                e.preventDefault();
-                member.name = document.getElementById("name").value;
-                member.birthYear = document.getElementById("birthYear").value;
-                member.nickname = document.getElementById("nickname").value;
-
-                const pictureInput = document.getElementById("picture").files[0];
-                if (pictureInput) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        member.picture = e.target.result;
-                        saveAndRenderMembers();
-                        closeModal();
-                    };
-                    reader.readAsDataURL(pictureInput);
-                } else {
-                    saveAndRenderMembers();
-                    closeModal();
-                }
-            };
-        }
-    }
-
-    function deleteMember(id) {
-        members = members.filter(m => m.id !== id);
-        saveAndRenderMembers();
-    }
-
-    window.onload = function () {
-        renderMembers();
-    };
-
 </script>
 
 </body>

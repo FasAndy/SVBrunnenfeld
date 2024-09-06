@@ -16,10 +16,13 @@
             color: #e67e22; 
             text-align: center; 
             padding: 10px 0; 
+            position: relative;
         }
         nav {
             background-color: #333;
             padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
         }
         nav a {
             color: white;
@@ -30,6 +33,9 @@
         nav a:hover {
             background-color: #e67e22;
         }
+        .lang-select {
+            margin-right: 20px;
+        }
         section {
             padding: 20px;
         }
@@ -37,25 +43,73 @@
             font-size: 1.5em;
             margin-top: 20px;
         }
+        .language-button {
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin: 5px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Your Football Team</h1>
+    <h1 id="title">Your Football Team</h1>
 </header>
 
 <nav>
-    <a href="index.html">Home</a>
-    <a href="history.html">History</a>
-    <a href="team.html">Team</a>
-    <a href="pitch.html">Pitch</a>
+    <div>
+        <a href="index.html" id="nav-home">Home</a>
+        <a href="history.html" id="nav-history">History</a>
+        <a href="team.html" id="nav-team">Team</a>
+        <a href="pitch.html" id="nav-pitch">Pitch</a>
+    </div>
+    <div class="lang-select">
+        <button class="language-button" onclick="setLanguage('en')">English</button>
+        <button class="language-button" onclick="setLanguage('de')">Deutsch</button>
+    </div>
 </nav>
 
 <section>
-    <h2 class="section-title">Welcome to Your Football Team Website</h2>
-    <p>Click on the links above to learn more about our team!</p>
+    <h2 class="section-title" id="welcome-title">Welcome to Your Football Team Website</h2>
+    <p id="welcome-text">Click on the links above to learn more about our team!</p>
 </section>
+
+<script>
+    const translations = {
+        en: {
+            title: "Your Football Team",
+            navHome: "Home",
+            navHistory: "History",
+            navTeam: "Team",
+            navPitch: "Pitch",
+            welcomeTitle: "Welcome to Your Football Team Website",
+            welcomeText: "Click on the links above to learn more about our team!",
+        },
+        de: {
+            title: "Dein Fußballteam",
+            navHome: "Startseite",
+            navHistory: "Geschichte",
+            navTeam: "Mannschaft",
+            navPitch: "Spielfeld",
+            welcomeTitle: "Willkommen auf der Website Ihres Fußballteams",
+            welcomeText: "Klicken Sie auf die obenstehenden Links, um mehr über unser Team zu erfahren!",
+        }
+    };
+
+    function setLanguage(lang) {
+        document.getElementById('title').textContent = translations[lang].title;
+        document.getElementById('nav-home').textContent = translations[lang].navHome;
+        document.getElementById('nav-history').textContent = translations[lang].navHistory;
+        document.getElementById('nav-team').textContent = translations[lang].navTeam;
+        document.getElementById('nav-pitch').textContent = translations[lang].navPitch;
+        document.getElementById('welcome-title').textContent = translations[lang].welcomeTitle;
+        document.getElementById('welcome-text').textContent = translations[lang].welcomeText;
+    }
+</script>
 
 </body>
 </html>

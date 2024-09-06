@@ -289,6 +289,118 @@
     }
 
 </script>
+<script>
+    let members = JSON.parse(localStorage.getItem('members')) || [];
+
+    function openModal() {
+        document.getElementById("addMemberModal").style.display = "block";
+        document.getElementById("submit-btn").innerText = "Add Member";
+        document.getElementById("addMemberForm").reset();
+        document.getElementById("addMemberForm").onsubmit = addMember;
+    }
+
+    function closeModal() {
+        document.getElementById("addMemberModal").style.display = "none";
+    }
+
+    function addMember(event) {
+        event.preventDefault();
+        
+        const name = document.getElementById('name').value;
+        const birthYear = document.getElementById('birthYear').value;
+        const nickname = document.getElementById('nickname').value;
+        const picture = document.getElementById('picture').files[0];
+
+        if (!name || !birthYear || !nickname || !picture) {
+            alert("All fields are required.");
+            return false;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const memberId = Date.now().toString();
+            const newMember = {
+                id: memberId,
+                name,
+                birthYear,
+                nickname,
+                picture: e.target.result
+            };
+
+            members.push(newMember);
+            saveAndRenderMembers();
+            closeModal();
+        };
+        reader.readAsDataURL(picture);
+    }
+
+    function saveAndRenderMembers() {
+        localStorage.setItem('members', JSON.stringify(members));
+        renderMembers();
+    }
+
+    function renderMembers() {
+        const teamList = document.getElementById('team-list');
+        teamList.innerHTML = ''; // Clear the current list
+
+        members.forEach(member => {
+            const memberDiv = document.createElement('div');
+            memberDiv.classList.add('team-member');
+            memberDiv.innerHTML = `
+                <img src="${member.picture}" alt="${member.name}">
+                <p><strong>Name:</strong> ${member.name}</p>
+                <p><strong>Year of Birth:</strong> ${member.birthYear}</p>
+                <p><strong>Nickname:</strong> ${member.nickname}</p>
+                <button onclick="editMember('${member.id}')">Edit</button>
+                <button onclick="deleteMember('${member.id}')">Delete</button>
+            `;
+            teamList.appendChild(memberDiv);
+        });
+    }
+
+    function editMember(id) {
+        const member = members.find(m => m.id === id);
+        if (member) {
+            document.getElementById("name").value = member.name;
+            document.getElementById("birthYear").value = member.birthYear;
+            document.getElementById("nickname").value = member.nickname;
+
+            openModal();
+            document.getElementById("submit-btn").innerText = "Save Changes";
+
+            document.getElementById("addMemberForm").onsubmit = function (e) {
+                e.preventDefault();
+                member.name = document.getElementById("name").value;
+                member.birthYear = document.getElementById("birthYear").value;
+                member.nickname = document.getElementById("nickname").value;
+
+                const pictureInput = document.getElementById("picture").files[0];
+                if (pictureInput) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        member.picture = e.target.result;
+                        saveAndRenderMembers();
+                        closeModal();
+                    };
+                    reader.readAsDataURL(pictureInput);
+                } else {
+                    saveAndRenderMembers();
+                    closeModal();
+                }
+            };
+        }
+    }
+
+    function deleteMember(id) {
+        members = members.filter(m => m.id !== id);
+        saveAndRenderMembers();
+    }
+
+    window.onload = function () {
+        renderMembers();
+    };
+
+</script>
 
 </body>
 </html>

@@ -339,22 +339,10 @@
     const name = document.getElementById('name').value;
     const birthYear = document.getElementById('birthYear').value;
     const nickname = document.getElementById('nickname').value;
-    const pictureInput = document.getElementById('picture');
 
-    let pictureUrl = '';
-
-    if (pictureInput.files && pictureInput.files[0]) {
-        const reader = new FileReader();
-        reader.onload = async function (e) {
-            pictureUrl = e.target.result;  // Use the base64 image string for storage
-            await saveMemberToAirtable(name, birthYear, nickname, pictureUrl);
-            loadMembersFromAirtable();  // Reload members after saving
-        };
-        reader.readAsDataURL(pictureInput.files[0]);
-    } else {
-        await saveMemberToAirtable(name, birthYear, nickname, '');
-        loadMembersFromAirtable();  // Reload members after saving
-    }
+    // Call Airtable without a picture for now
+    await saveMemberToAirtable(name, birthYear, nickname);
+    loadMembersFromAirtable();  // Reload members after saving
 
     closeModal();
     return false;

@@ -191,6 +191,67 @@
             }
         }
     </style>
+    <script>
+  const PAT_TOKEN = 'patYQuPmeaFxRVPwS.13d1939acaddd96a0860ac83aac3b227edab6db6ebf9f05ee8ef7c636aef9c16';  // Replace with your Personal Access Token
+  const BASE_ID = 'applxXbmnwqxOib3T';  // Replace with your Airtable Base ID
+  const TABLE_NAME = 'MemberData';  // Replace with your Airtable table name
+
+  // Function to save a member to Airtable
+  async function saveMemberToAirtable(name, birthYear, nickname, picture) {
+      const response = await fetch(`https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}`, {
+          method: 'POST',
+          headers: {
+              Authorization: `Bearer ${PAT_TOKEN}`,  // Use the PAT token for authorization
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              fields: {
+                  Name: name,
+                  BirthYear: birthYear,
+                  Nickname: nickname,
+                  Picture: [{ url: picture }]
+              }
+          }),
+      });
+      const data = await response.json();
+      console.log(data);
+  }
+
+  // Function to load members from Airtable
+  async function loadMembersFromAirtable() {
+      const response = await fetch(`https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}`, {
+          headers: {
+              Authorization: `Bearer ${PAT_TOKEN}`  // Use the PAT token for authorization
+          }
+      });
+      const data = await response.json();
+      displayMembers(data.records);
+  }
+
+  // Display members on the page
+  function displayMembers(members) {
+      const teamList = document.getElementById('team-list');
+      teamList.innerHTML = '';  // Clear the list
+      members.forEach(member => {
+          const memberData = member.fields;
+          const memberDiv = document.createElement('div');
+          memberDiv.classList.add('team-member');
+
+          const img = document.createElement('img');
+          img.src = memberData.Picture ? memberData.Picture[0].url : 'placeholder.jpg';
+
+          const memberInfo = document.createElement('div');
+          memberInfo.innerHTML = `<strong>${memberData.Name}</strong> (${memberData.BirthYear})<br>Nickname: ${memberData.Nickname}`;
+
+          memberDiv.appendChild(img);
+          memberDiv.appendChild(memberInfo);
+          teamList.appendChild(memberDiv);
+      });
+  }
+
+  // Call loadMembersFromAirtable on page load
+  window.onload = loadMembersFromAirtable;
+</script>
 </head>
 <body>
 
@@ -274,35 +335,30 @@
     }
 
     // Function to save or update a team member
-    function saveMember() {
-        const name = document.getElementById('name').value;
-        const birthYear = document.getElementById('birthYear').value;
-        const nickname = document.getElementById('nickname').value;
-        const pictureInput = document.getElementById('picture');
+    async function saveMember() {
+    const name = document.getElementById('name').value;
+    const birthYear = document.getElementById('birthYear').value;
+    const nickname = document.getElementById('nickname').value;
+    const pictureInput = document.getElementById('picture');
+
+    let pictureUrl = '';
+
+    if (pictureInput.files && pictureInput.files[0]) {
         const reader = new FileReader();
-
-        // If a picture is uploaded, read it as base64
-        if (pictureInput.files && pictureInput.files[0]) {
-            reader.onload = function (e) {
-                const picture = e.target.result;
-                if (editIndex !== null) {
-                    updateMember(editIndex, name, birthYear, nickname, picture);
-                } else {
-                    addNewMember(name, birthYear, nickname, picture);
-                }
-            };
-            reader.readAsDataURL(pictureInput.files[0]);
-        } else {
-            if (editIndex !== null) {
-                updateMember(editIndex, name, birthYear, nickname, members[editIndex].picture);
-            } else {
-                addNewMember(name, birthYear, nickname, '');
-            }
-        }
-
-        closeModal(); // Close the modal after saving
-        return false; // Prevent form submission
+        reader.onload = async function (e) {
+            pictureUrl = e.target.result;  // Use the base64 image string for storage
+            await saveMemberToAirtable(name, birthYear, nickname, pictureUrl);
+            loadMembersFromAirtable();  // Reload members after saving
+        };
+        reader.readAsDataURL(pictureInput.files[0]);
+    } else {
+        await saveMemberToAirtable(name, birthYear, nickname, '');
+        loadMembersFromAirtable();  // Reload members after saving
     }
+
+    closeModal();
+    return false;
+}
 
     // Function to add a new team member
     function addNewMember(name, birthYear, nickname, picture) {

@@ -14,27 +14,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Function to sort by Jahrgang
     function sortByYear() {
-        let players = document.querySelectorAll('.player');
-        let squad = document.getElementById('squad');
-        let sortedPlayers = Array.from(players).sort((a, b) => {
-            // Extract year safely with null check
-            let yearAElement = a.querySelector('p:nth-of-type(1)');
-            let yearBElement = b.querySelector('p:nth-of-type(1)');
-            
-            let yearA = yearAElement ? parseInt(yearAElement.textContent.replace(/\D/g, '')) : 0;
-            let yearB = yearBElement ? parseInt(yearBElement.textContent.replace(/\D/g, '')) : 0;
+    console.log("Sort by Jahrgang clicked"); // Log button click
 
-            console.log("Player A Year:", yearA); // Debug output
-            console.log("Player B Year:", yearB); // Debug output
+    let players = document.querySelectorAll('.player');
+    let squad = document.getElementById('squad');
+    let sortedPlayers = Array.from(players).sort((a, b) => {
+        // Now targeting the first <p> element for Jahrgang
+        let yearAElement = a.querySelector('p:nth-of-type(1)');
+        let yearBElement = b.querySelector('p:nth-of-type(1)');
 
-            return yearA - yearB; // Ascending order (older first)
-        });
-        
-        console.log("Sorted players by year:", sortedPlayers); // Debug sorted result
+        // Extract year safely with null check
+        let yearA = yearAElement ? parseInt(yearAElement.textContent.replace(/\D/g, '')) : 0;
+        let yearB = yearBElement ? parseInt(yearBElement.textContent.replace(/\D/g, '')) : 0;
 
-        squad.innerHTML = ''; // Clear current player list
-        sortedPlayers.forEach(player => squad.appendChild(player)); // Append sorted players
-    }
+        console.log("Player A Year:", yearA); // Debug output
+        console.log("Player B Year:", yearB); // Debug output
+
+        return yearA - yearB; // Ascending order (older first)
+    });
+
+    console.log("Sorted players by year:", sortedPlayers); // Debug sorted result
+
+    squad.innerHTML = ''; // Clear current player list
+    sortedPlayers.forEach(player => squad.appendChild(player)); // Append sorted players
+}
 
     // Attach event listeners for sorting buttons
     document.querySelector('#sortByName').addEventListener('click', sortByName);

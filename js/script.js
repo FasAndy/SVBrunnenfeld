@@ -18,8 +18,8 @@ document.addEventListener("DOMContentLoaded", function () {
         let squad = document.getElementById('squad');
         let sortedPlayers = Array.from(players).sort((a, b) => {
             // Extract year safely with null check
-            let yearAElement = a.querySelector('p:nth-of-type(2)');
-            let yearBElement = b.querySelector('p:nth-of-type(2)');
+            let yearAElement = a.querySelector('p:nth-of-type(1)');
+            let yearBElement = b.querySelector('p:nth-of-type(1)');
             
             let yearA = yearAElement ? parseInt(yearAElement.textContent.replace(/\D/g, '')) : 0;
             let yearB = yearBElement ? parseInt(yearBElement.textContent.replace(/\D/g, '')) : 0;

@@ -81,12 +81,13 @@ nav a i {
 
 /* Startseite (Home) button styles */
 nav .home-btn {
-    background-color: #f60;
-    color: white;
+    background-color: #000;
+    color: #f60;
 }
 
 nav .home-btn:hover {
-    background-color: #333;
+    background-color: #f60;
+    color: white;
 }
 
 /* Team button styles */

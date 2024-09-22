@@ -12,15 +12,18 @@ document.addEventListener("DOMContentLoaded", function () {
         sortedPlayers.forEach(player => squad.appendChild(player)); // Append sorted players
     }
 
-    // Function to sort by Jahrgang with logging for debugging
+    // Function to sort by Jahrgang
     function sortByYear() {
         let players = document.querySelectorAll('.player');
         let squad = document.getElementById('squad');
         let sortedPlayers = Array.from(players).sort((a, b) => {
-            // Extract year with debug logging
-            let yearA = parseInt(a.querySelector('p:nth-of-type(2)').textContent.replace(/\D/g, ''));
-            let yearB = parseInt(b.querySelector('p:nth-of-type(2)').textContent.replace(/\D/g, ''));
+            // Extract year safely with null check
+            let yearAElement = a.querySelector('p:nth-of-type(2)');
+            let yearBElement = b.querySelector('p:nth-of-type(2)');
             
+            let yearA = yearAElement ? parseInt(yearAElement.textContent.replace(/\D/g, '')) : 0;
+            let yearB = yearBElement ? parseInt(yearBElement.textContent.replace(/\D/g, '')) : 0;
+
             console.log("Player A Year:", yearA); // Debug output
             console.log("Player B Year:", yearB); // Debug output
 
@@ -33,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
         sortedPlayers.forEach(player => squad.appendChild(player)); // Append sorted players
     }
 
-    // Event listeners for sorting buttons
-    document.querySelector('button[onclick="sortByName()"]').addEventListener('click', sortByName);
-    document.querySelector('button[onclick="sortByYear()"]').addEventListener('click', sortByYear);
+    // Attach event listeners for sorting buttons
+    document.querySelector('#sortByName').addEventListener('click', sortByName);
+    document.querySelector('#sortByYear').addEventListener('click', sortByYear);
 });

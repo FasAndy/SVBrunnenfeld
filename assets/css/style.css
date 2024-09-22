@@ -100,3 +100,23 @@ nav .team-btn:hover {
     background-color: #f60;
     color: white;
 }
+
+#sorting-controls {
+    text-align: center;
+    margin: 1rem 0;
+}
+
+#sorting-controls button {
+    background-color: #f60;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#sorting-controls button:hover {
+    background-color: #333;
+    color: #fff;
+}

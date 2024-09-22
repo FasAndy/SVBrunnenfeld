@@ -64,14 +64,38 @@ nav {
 }
 
 nav a {
-    color: #fff;
-    background-color: #f60;
     padding: 0.5rem 1rem;
     margin: 0 0.5rem;
     text-decoration: none;
     border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    color: white;
+    font-size: 1rem;
 }
 
-nav a:hover {
+/* Icon styling */
+nav a i {
+    margin-right: 0.5rem;
+}
+
+/* Startseite (Home) button styles */
+nav .home-btn {
+    background-color: #f60;
+    color: white;
+}
+
+nav .home-btn:hover {
     background-color: #333;
+}
+
+/* Team button styles */
+nav .team-btn {
+    background-color: #000;
+    color: #f60;
+}
+
+nav .team-btn:hover {
+    background-color: #f60;
+    color: white;
 }

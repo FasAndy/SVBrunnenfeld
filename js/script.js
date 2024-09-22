@@ -17,8 +17,8 @@ document.addEventListener("DOMContentLoaded", function () {
         let players = document.querySelectorAll('.player');
         let squad = document.getElementById('squad');
         let sortedPlayers = Array.from(players).sort((a, b) => {
-            let yearA = parseInt(a.querySelector('p:nth-of-type(2)').textContent.split(': ')[1]);
-            let yearB = parseInt(b.querySelector('p:nth-of-type(2)').textContent.split(': ')[1]);
+            let yearA = parseInt(a.querySelector('p:nth-of-type(2)').textContent.match(/\d+/)[0]);
+            let yearB = parseInt(b.querySelector('p:nth-of-type(2)').textContent.match(/\d+/)[0]);
             return yearA - yearB; // Ascending order (older first)
         });
         squad.innerHTML = ''; // Clear current player list

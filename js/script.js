@@ -17,15 +17,16 @@ document.addEventListener("DOMContentLoaded", function () {
         let players = document.querySelectorAll('.player');
         let squad = document.getElementById('squad');
         let sortedPlayers = Array.from(players).sort((a, b) => {
-            let yearA = parseInt(a.querySelector('p:nth-of-type(2)').textContent.match(/\d+/)[0]);
-            let yearB = parseInt(b.querySelector('p:nth-of-type(2)').textContent.match(/\d+/)[0]);
+            // Extract year from "Jahrgang" line using text content
+            let yearA = parseInt(a.querySelector('p:nth-of-type(2)').textContent.replace(/\D/g, ''));
+            let yearB = parseInt(b.querySelector('p:nth-of-type(2)').textContent.replace(/\D/g, ''));
             return yearA - yearB; // Ascending order (older first)
         });
         squad.innerHTML = ''; // Clear current player list
         sortedPlayers.forEach(player => squad.appendChild(player)); // Append sorted players
     }
 
-    // Event listeners for sorting buttons
+    // Add event listeners for sorting buttons, using addEventListener for mobile compatibility
     document.querySelector('button[onclick="sortByName()"]').addEventListener('click', sortByName);
     document.querySelector('button[onclick="sortByYear()"]').addEventListener('click', sortByYear);
 });

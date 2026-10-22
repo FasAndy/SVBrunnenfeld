@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#231F20">
+<title>SV Brunnenfeld</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="SV Brunnenfeld – Sektion Fußball der Dorfgemeinschaft Brunnenfeld (Bludenz). Hobbyfußball seit 1969: News, Ergebnisse, Platz und Kontakt.">
+<link rel="icon" type="image/svg+xml" href="assets/wappen.svg">
+<link rel="apple-touch-icon" href="assets/icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Archivo:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: Das Diagonalband aus dem Wappen zieht sich als Leitmotiv durch die Seite –
+   schräge Kanten, gestreifte Trenner, Stadionanzeige-Typo. Bewusst eine Farbwelt (hell). */
+:root {
+  --gelb: #FFF100;
+  --schwarz: #231F20;
+  --weiss: #FFFFFF;
+  --rot: #EE1C25;
+  --kreide: #F3F1EC;      /* neutraler Grund, leicht zum Schwarz-Rot gezogen */
+  --grau: #6E6869;        /* Sekundärtext */
+  --linie: #DAD6D2;
+
+  --f-display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --f-text: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --gutter-l: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+  --max: 1120px;
+  --schraeg: 4vw;
+  color-scheme: light;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body {
+  background: var(--kreide);
+  color: var(--schwarz);
+  font: 400 1.0625rem/1.6 var(--f-text);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px); z-index: 60; background: var(--schwarz);
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--rot); outline-offset: 3px; }
+
+.wrap {
+  max-width: calc(var(--max) + 64px);
+  margin-inline: auto;
+  padding-left: var(--gutter-l);
+  padding-right: var(--gutter-r);
+}
+@media (min-width: 720px) { .wrap { padding-left: max(32px, env(safe-area-inset-left, 0px)); padding-right: max(32px, env(safe-area-inset-right, 0px)); } }
+
+h1, h2, h3 { font-family: var(--f-display); text-transform: uppercase; line-height: .9; margin: 0; text-wrap: balance; letter-spacing: .005em; }
+h2 { font-size: clamp(2.6rem, 8vw, 5rem); font-weight: 900; }
+h3 { font-size: 1.6rem; font-weight: 800; }
+p { margin: 0; max-width: 62ch; }
+
+.kicker {
+  font: 500 .78rem/1 var(--f-mono);
+  text-transform: uppercase; letter-spacing: .14em;
+  display: inline-flex; align-items: center; gap: .6em;
+}
+.kicker::before { content: ""; width: 22px; height: 8px; background: currentColor; transform: skewX(-45deg); }
+
+.ph {  /* Platzhalter-Markierung für die Diskussion */
+  background: repeating-linear-gradient(-45deg, rgba(238,28,37,.10) 0 6px, transparent 6px 12px);
+  border-bottom: 2px dotted var(--rot);
+  padding-inline: .15em;
+}
+
+/* ---------- Kopfleiste ---------- */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
+  background: var(--schwarz); color: var(--weiss);
+}
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 60px; }
+.marke { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.marke img { width: 30px; height: auto; }
+.marke span { font: 800 1.35rem/1 var(--f-display); text-transform: uppercase; letter-spacing: .02em; }
+.marke span b { color: var(--gelb); font-weight: 800; }
+
+.nav { display: none; gap: 4px; }
+.nav a {
+  position: relative; text-decoration: none;
+  font: 500 .8rem/1 var(--f-mono); text-transform: uppercase; letter-spacing: .1em;
+  padding: 10px 12px;
+}
+.nav a::after {
+  content: ""; position: absolute; left: 12px; right: 12px; bottom: 4px; height: 3px;
+  background: var(--gelb); transform: scaleX(0) skewX(-45deg); transform-origin: left; transition: transform .2s;
+}
+.nav a:hover::after, .nav a[aria-current="true"]::after { transform: scaleX(1) skewX(-45deg); }
+
+.menue-knopf {
+  appearance: none; border: 0; cursor: pointer;
+  background: var(--gelb); color: var(--schwarz);
+  font: 800 1rem/1 var(--f-display); text-transform: uppercase; letter-spacing: .08em;
+  padding: 10px 18px 10px 14px;
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.menue-knopf i { display: grid; gap: 4px; }
+.menue-knopf i::before, .menue-knopf i::after { content: ""; width: 18px; height: 3px; background: currentColor; transition: transform .2s; }
+.menue-knopf[aria-expanded="true"] i::before { transform: translateY(3.5px) rotate(45deg); }
+.menue-knopf[aria-expanded="true"] i::after { transform: translateY(-3.5px) rotate(-45deg); }
+
+.schublade {
+  background: var(--gelb); color: var(--schwarz);
+  border-bottom: 10px solid var(--schwarz);
+}
+.schublade .wrap { padding-block: 12px 24px; display: grid; }
+.schublade a {
+  text-decoration: none; display: flex; justify-content: space-between; align-items: baseline;
+  font: 900 2.4rem/1 var(--f-display); text-transform: uppercase;
+  padding-block: 12px; border-bottom: 2px solid var(--schwarz);
+}
+.schublade a small { font: 500 .75rem var(--f-mono); letter-spacing: .1em; }
+@media (min-width: 880px) { .nav { display: flex; } .menue-knopf, .schublade { display: none !important; } }
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative; isolation: isolate; overflow: hidden;
+  background: var(--gelb);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--schraeg)), 0 100%);
+  padding-block: 40px calc(56px + var(--schraeg));
+}
+.hero::before { /* das Band aus dem Wappen */
+  content: ""; position: absolute; z-index: -1;
+  width: 180%; height: 120px; left: -40%; top: 52%;
+  background:
+    linear-gradient(var(--weiss), var(--weiss)) top / 100% 8px no-repeat,
+    linear-gradient(var(--weiss), var(--weiss)) bottom / 100% 8px no-repeat,
+    linear-gradient(transparent 16px, var(--schwarz) 16px, var(--schwarz) calc(100% - 16px), transparent calc(100% - 16px));
+  transform: rotate(-24deg);
+  opacity: .95;
+}
+.hero .wrap { display: grid; gap: 28px; align-items: end; }
+.hero-text { display: grid; gap: 20px; min-width: 0; }
+.hero h1 { font-size: clamp(3.6rem, 15vw, 8.5rem); font-weight: 900; line-height: .84; }
+.hero h1 .ueber { display: block; font-size: .32em; font-weight: 800; letter-spacing: .06em; margin-bottom: .25em; }
+.hero h1 em { font-style: normal; color: var(--rot); }
+.hero-sub {
+  background: var(--schwarz); color: var(--weiss);
+  padding: 14px 16px; max-width: 34ch; font-size: 1.05rem; line-height: 1.45;
+  justify-self: start;
+}
+.hero-wappen { justify-self: center; width: min(58vw, 300px); filter: drop-shadow(8px 10px 0 rgba(35,31,32,.9)); }
+.hero-wappen img { width: 100%; }
+@media (min-width: 820px) {
+  .hero { padding-block: 72px calc(88px + var(--schraeg)); }
+  .hero .wrap { grid-template-columns: 1.5fr 1fr; }
+  .hero::before { top: 64%; height: 150px; }
+}
+
+/* Anzeigetafel unter dem Hero */
+.tafel { margin-top: calc(-1 * var(--schraeg) - 28px); position: relative; z-index: 2; }
+.tafel-in {
+  background: var(--schwarz); color: var(--weiss);
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  box-shadow: 8px 8px 0 var(--rot);
+}
+.tafel-in > div { padding: 16px; border-right: 1px solid #3a3536; border-bottom: 1px solid #3a3536; min-width: 0; }
+.tafel-in dt { font: 500 .68rem var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--gelb); }
+.tafel-in dd { margin: 6px 0 0; font: 800 2.2rem/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.tafel-in dd small { font: 500 .8rem var(--f-text); color: #bdb7b8; display: block; margin-top: 4px; text-transform: none; }
+@media (min-width: 720px) { .tafel-in { grid-template-columns: repeat(4, 1fr); } .tafel-in > div { border-bottom: 0; } }
+
+/* ---------- Abschnitte ---------- */
+section { padding-block: 72px; }
+.kopf { display: grid; gap: 14px; margin-bottom: 36px; }
+
+/* Wer wir sind */
+.wir-grid { display: grid; gap: 32px; }
+.wir-text { display: grid; gap: 18px; font-size: 1.12rem; min-width: 0; }
+.wir-text p:first-child::first-letter {
+  font: 900 4.2rem/.8 var(--f-display); float: left; margin: 6px 10px 0 0;
+  background: var(--gelb); padding: 6px 8px 2px;
+}
+.alter {
+  align-self: start; background: var(--weiss); padding: 22px 20px 26px;
+  border: 2px solid var(--schwarz);
+}
+.alter h3 { font-size: 1.3rem; margin-bottom: 4px; }
+.alter p { font-size: .9rem; color: var(--grau); margin-bottom: 18px; }
+.zeitstrahl { position: relative; height: 64px; margin-inline: 8px; }
+.zeitstrahl .bahn { position: absolute; left: 0; right: 0; top: 28px; height: 8px; background: repeating-linear-gradient(90deg, var(--schwarz) 0 2px, transparent 2px 10%); }
+.zeitstrahl .band { position: absolute; left: 0; right: 0; top: 24px; height: 16px; background: var(--gelb); border: 2px solid var(--schwarz); }
+.zeitstrahl .pin { position: absolute; top: 0; transform: translateX(-50%); font: 800 1.4rem/1 var(--f-display); text-align: center; }
+.zeitstrahl .pin::after { content: ""; display: block; width: 2px; height: 22px; background: var(--rot); margin: 2px auto 0; }
+.zeitstrahl .skala { position: absolute; left: 0; right: 0; top: 46px; display: flex; justify-content: space-between; font: 400 .7rem var(--f-mono); color: var(--grau); }
+@media (min-width: 820px) { .wir-grid { grid-template-columns: 1.4fr 1fr; gap: 56px; } }
+
+/* Werte */
+.werte { background: var(--schwarz); color: var(--weiss); position: relative; }
+.werte .kicker { color: var(--gelb); }
+.werte-liste { display: grid; gap: 2px; background: #3a3536; border: 2px solid #3a3536; }
+.wert { background: var(--schwarz); padding: 26px 22px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.wert .nr { font: 500 .72rem var(--f-mono); color: var(--gelb); letter-spacing: .14em; text-transform: uppercase; }
+.wert h3 { font-size: 2rem; }
+.wert p { color: #cfc9ca; font-size: .98rem; }
+.wert.karte { position: relative; }
+.wert .gk { position: absolute; top: 22px; right: 22px; width: 26px; height: 36px; background: var(--gelb); transform: rotate(10deg); border-radius: 2px; }
+@media (min-width: 760px) { .werte-liste { grid-template-columns: repeat(3, 1fr); } }
+
+/* Training */
+.saison-schalter { display: inline-flex; border: 2px solid var(--schwarz); background: var(--weiss); margin-bottom: 20px; }
+.saison-schalter button {
+  appearance: none; border: 0; background: transparent; cursor: pointer; color: var(--schwarz);
+  font: 800 1.15rem/1 var(--f-display); text-transform: uppercase; letter-spacing: .04em;
+  padding: 12px 18px; position: relative;
+}
+.saison-schalter button[aria-pressed="true"] { background: var(--schwarz); color: var(--gelb); }
+.saison-schalter button + button { border-left: 2px solid var(--schwarz); }
+.saison-schalter .jetzt { font: 500 .6rem var(--f-mono); letter-spacing: .1em; display: block; margin-top: 4px; color: var(--rot); }
+
+.plan { display: grid; gap: 20px; }
+.plan-karte {
+  background: var(--weiss); border: 2px solid var(--schwarz);
+  display: grid; grid-template-columns: 92px 1fr; min-width: 0;
+}
+.plan-karte .tag {
+  background: var(--gelb); border-right: 2px solid var(--schwarz);
+  display: grid; place-content: center; text-align: center; padding: 14px 6px;
+}
+.plan-karte .tag b { font: 900 2.4rem/1 var(--f-display); text-transform: uppercase; }
+.plan-karte .tag span { font: 500 .66rem var(--f-mono); letter-spacing: .1em; text-transform: uppercase; }
+.plan-karte .info { padding: 16px 18px; display: grid; gap: 6px; min-width: 0; }
+.plan-karte .zeit { font: 800 1.7rem/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.plan-karte .ort { font-size: .95rem; color: var(--grau); }
+.plan-hinweis { font-size: .95rem; margin-top: 18px; color: var(--grau); }
+@media (min-width: 720px) { .plan { grid-template-columns: repeat(2, 1fr); } }
+
+/* Spiele */
+.spiele { background: var(--weiss); border-block: 2px solid var(--schwarz); }
+.spiele-grid { display: grid; gap: 40px; }
+.ergebnisse { display: grid; gap: 0; }
+.erg {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;
+  padding: 14px 0; border-bottom: 1px solid var(--linie);
+}
+.erg .team { font: 700 1.05rem/1.2 var(--f-text); min-width: 0; overflow-wrap: anywhere; }
+.erg .team:last-child { text-align: right; }
+.erg .team.svb { font-family: var(--f-display); font-weight: 900; font-size: 1.35rem; text-transform: uppercase; }
+.erg .stand {
+  font: 800 1.6rem/1 var(--f-display); font-variant-numeric: tabular-nums;
+  background: var(--schwarz); color: var(--gelb); padding: 6px 10px; letter-spacing: .06em;
+}
+.erg .meta { grid-column: 1 / -1; font: 400 .72rem var(--f-mono); color: var(--grau); letter-spacing: .08em; text-transform: uppercase; }
+.turniere { display: grid; gap: 14px; align-content: start; }
+.turnier {
+  position: relative; padding: 18px 20px 18px 64px; background: var(--kreide);
+  border-left: 0; min-width: 0;
+}
+.turnier::before {
+  content: attr(data-platz); position: absolute; left: 0; top: 0; bottom: 0; width: 48px;
+  background: var(--gelb); display: grid; place-content: center;
+  font: 900 1.6rem/1 var(--f-display);
+  clip-path: polygon(0 0, 100% 0, 70% 100%, 0 100%);
+}
+.turnier h3 { font-size: 1.3rem; }
+.turnier p { font-size: .9rem; color: var(--grau); }
+@media (min-width: 860px) { .spiele-grid { grid-template-columns: 1.2fr 1fr; gap: 56px; } }
+
+/* Platz & Klubheim */
+.anlage-grid { display: grid; gap: 28px; }
+.feld-box { background: #2f6b3a; padding: 14px; border: 2px solid var(--schwarz); min-width: 0; }
+.feld { width: 100%; height: auto; display: block; }
+.feld .pin { cursor: pointer; }
+.feld .pin circle { fill: var(--gelb); stroke: var(--schwarz); stroke-width: 3; transition: r .15s; }
+.feld .pin text { font: 800 22px var(--f-display); fill: var(--schwarz); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+.feld .pin[aria-pressed="true"] circle { fill: var(--rot); }
+.feld .pin[aria-pressed="true"] text { fill: var(--weiss); }
+.feld .pin:focus { outline: none; }
+.feld .pin:focus-visible circle { stroke: var(--weiss); stroke-width: 5; }
+.orte { display: grid; gap: 12px; align-content: start; }
+.ort-karte { display: grid; grid-template-columns: 112px 1fr; gap: 14px; align-items: stretch; background: var(--weiss); border: 2px solid transparent; padding: 10px; transition: border-color .15s; min-width: 0; }
+.ort-karte.aktiv { border-color: var(--schwarz); box-shadow: 6px 6px 0 var(--gelb); }
+.foto-folgt {
+  aspect-ratio: 4 / 3; max-width: 100%;
+  background:
+    repeating-linear-gradient(-45deg, var(--kreide) 0 10px, var(--linie) 10px 12px);
+  display: grid; place-content: center; text-align: center;
+  font: 500 .62rem/1.3 var(--f-mono); text-transform: uppercase; letter-spacing: .1em; color: var(--grau);
+}
+.ort-karte h3 { font-size: 1.35rem; display: flex; gap: 8px; align-items: baseline; }
+.ort-karte h3 span { font: 500 .7rem var(--f-mono); color: var(--rot); }
+.ort-karte p { font-size: .92rem; color: var(--grau); margin-top: 4px; }
+.ort-karte > div { min-width: 0; }
+@media (min-width: 900px) { .anlage-grid { grid-template-columns: 1.15fr 1fr; gap: 40px; } }
+
+/* Instagram */
+.insta { padding-block: 0; }
+.insta-band {
+  background: var(--gelb); position: relative; overflow: hidden;
+  clip-path: polygon(0 var(--schraeg), 100% 0, 100% 100%, 0 calc(100% - var(--schraeg)));
+  padding-block: calc(48px + var(--schraeg));
+}
+.insta-band .wrap { display: grid; gap: 24px; align-items: center; }
+.insta-handle {
+  font: 900 clamp(2.4rem, 11vw, 6.5rem)/.9 var(--f-display); text-transform: lowercase;
+  text-decoration: none; overflow-wrap: anywhere; display: inline-block;
+}
+.insta-handle:hover { color: var(--rot); }
+.insta-kacheln { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: 100%; max-width: 360px; }
+.insta-kacheln span { aspect-ratio: 1; background: var(--schwarz); display: grid; place-content: center; color: var(--gelb); font: 500 .58rem var(--f-mono); letter-spacing: .1em; text-transform: uppercase; text-align: center; padding: 4px; }
+.insta-kacheln span:nth-child(2n) { background: var(--weiss); color: var(--grau); }
+@media (min-width: 820px) { .insta-band .wrap { grid-template-columns: 1.5fr 1fr; } .insta-kacheln { justify-self: end; } }
+
+/* Mitspielen */
+.mit-box { background: var(--schwarz); color: var(--weiss); padding: 32px 22px; display: grid; gap: 22px; position: relative; overflow: hidden; }
+.mit-box::after { content: ""; position: absolute; right: -60px; top: -40px; width: 200px; height: 340px; background: var(--gelb); transform: rotate(35deg); opacity: .12; }
+.mit-box .kicker { color: var(--gelb); }
+.mit-box p { color: #cfc9ca; }
+.schritte { display: grid; gap: 14px; counter-reset: s; list-style: none; padding: 0; margin: 0; }
+.schritte li { counter-increment: s; display: grid; grid-template-columns: 44px 1fr; gap: 12px; align-items: start; }
+.schritte li::before { content: counter(s); font: 900 2rem/1 var(--f-display); color: var(--schwarz); background: var(--gelb); text-align: center; padding: 6px 0 2px; }
+.schritte b { display: block; font: 800 1.25rem/1.1 var(--f-display); text-transform: uppercase; color: var(--weiss); }
+.schritte span { font-size: .93rem; color: #cfc9ca; }
+
+.anstoss {  /* eigener Button: Ticket-/Anstoß-Optik, keine Standardpille */
+  display: inline-flex; align-items: center; gap: 14px; justify-self: start; text-decoration: none;
+  background: var(--gelb); color: var(--schwarz);
+  font: 900 1.4rem/1 var(--f-display); text-transform: uppercase; letter-spacing: .04em;
+  padding: 16px 26px 14px 20px; position: relative; z-index: 1;
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%, 8px 50%);
+  transition: transform .15s, background .15s;
+}
+.anstoss::before { content: ""; width: 18px; height: 18px; border-radius: 50%; background: var(--schwarz); box-shadow: inset 0 0 0 4px var(--weiss), inset 0 0 0 7px var(--schwarz); }
+.anstoss:hover { background: var(--weiss); transform: translateX(4px); }
+.kontakt-zeile { font: 400 .85rem var(--f-mono); color: #bdb7b8; position: relative; z-index: 1; }
+@media (min-width: 820px) { .mit-box { grid-template-columns: 1fr 1fr; padding: 48px; gap: 40px; } .mit-box > .rechts { display: grid; gap: 22px; align-content: start; } }
+
+/* Fußzeile */
+footer { background: var(--schwarz); color: #bdb7b8; padding-block: 0 32px; margin-top: 72px; }
+.streifen { height: 22px; background: linear-gradient(var(--gelb) 0 6px, var(--weiss) 6px 9px, var(--schwarz) 9px 13px, var(--weiss) 13px 16px, var(--gelb) 16px); }
+footer .wrap { display: grid; gap: 24px; padding-top: 36px; font-size: .9rem; }
+footer .marke span { color: var(--weiss); }
+footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; font: 400 .8rem var(--f-mono); text-transform: uppercase; letter-spacing: .1em; }
+footer nav a { text-decoration: none; }
+footer nav a:hover { color: var(--gelb); }
+@media (min-width: 720px) { footer .wrap { grid-template-columns: 1fr auto; align-items: end; } }
+
+.entwurf {
+  position: fixed; z-index: 70;
+  right: max(12px, env(safe-area-inset-right, 0px)); bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  background: var(--rot); color: var(--weiss);
+  font: 500 .68rem var(--f-mono); letter-spacing: .1em; text-transform: uppercase;
+  padding: 8px 12px; transform: rotate(-3deg);
+}
+
+/* News */
+.news { padding-block: 56px 64px; }
+.news-kopf { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 20px; margin-bottom: 24px; }
+.news-liste { display: grid; gap: 14px; }
+.meldung {
+  display: grid; grid-template-columns: 76px 1fr; gap: 16px; align-items: start;
+  background: var(--weiss); padding: 16px; border: 2px solid var(--schwarz); min-width: 0;
+}
+.meldung > div { display: grid; gap: 6px; min-width: 0; }
+.meldung time { background: var(--schwarz); color: var(--weiss); text-align: center; padding: 10px 4px 8px; display: grid; gap: 4px; }
+.meldung time b { font: 900 2.2rem/1 var(--f-display); color: var(--gelb); font-variant-numeric: tabular-nums; }
+.meldung time span { font: 500 .62rem var(--f-mono); letter-spacing: .1em; text-transform: uppercase; }
+.meldung h3 { font-size: 1.5rem; }
+.meldung p { font-size: .97rem; color: var(--grau); }
+.rubrik {
+  justify-self: start; font: 500 .66rem var(--f-mono); letter-spacing: .14em; text-transform: uppercase;
+  background: var(--gelb); padding: 4px 10px 3px; clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+}
+.rubrik.rot { background: var(--rot); color: var(--weiss); }
+.news-liste > .meldung:first-child { background: var(--gelb); box-shadow: 8px 8px 0 var(--schwarz); }
+.news-liste > .meldung:first-child p { color: var(--schwarz); }
+.news-liste > .meldung:first-child .rubrik { background: var(--schwarz); color: var(--gelb); }
+#news-alt > .meldung:first-child { background: var(--weiss); box-shadow: none; }
+.aeltere { margin-top: 18px; }
+.aeltere summary {
+  cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 10px;
+  font: 800 1.1rem/1 var(--f-display); text-transform: uppercase; letter-spacing: .06em;
+  padding-block: 8px; border-bottom: 3px solid var(--schwarz);
+}
+.aeltere summary::-webkit-details-marker { display: none; }
+.aeltere summary::after { content: "+"; font-size: 1.4rem; }
+.aeltere[open] summary::after { content: "–"; }
+.aeltere .news-liste { margin-top: 14px; }
+.news-insta { margin-top: 22px; font-size: .92rem; color: var(--grau); }
+.news-insta a { color: var(--schwarz); font-weight: 700; }
+@media (min-width: 820px) {
+  .news-liste { grid-template-columns: repeat(2, 1fr); }
+  .news-liste > .meldung:first-child { grid-column: 1 / -1; grid-template-columns: 110px 1fr; padding: 24px; }
+  .news-liste > .meldung:first-child time b { font-size: 3.2rem; }
+  .news-liste > .meldung:first-child h3 { font-size: 2.2rem; }
+  #news-alt > .meldung:first-child { grid-column: auto; grid-template-columns: 76px 1fr; padding: 16px; }
+}
+
+/* Wer wir sind: Eckdaten + Training */
+.wir { background: var(--weiss); border-top: 2px solid var(--schwarz); }
+.alter { background: var(--kreide); display: grid; gap: 18px; }
+.eck { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0; }
+.eck dt { font: 500 .68rem var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--grau); }
+.eck dd { margin: 2px 0 0; font: 900 2.6rem/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.training { display: grid; gap: 8px; border-top: 2px solid var(--schwarz); padding-top: 16px; }
+.training h3 { font-size: 1.3rem; }
+.saison { display: grid; grid-template-columns: 76px 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; background: var(--weiss); border: 2px solid var(--linie); }
+.saison b { font: 800 1.1rem/1 var(--f-display); text-transform: uppercase; }
+.saison span { font-size: .92rem; min-width: 0; }
+.saison i { font: 500 .6rem var(--f-mono); font-style: normal; letter-spacing: .12em; text-transform: uppercase; background: var(--rot); color: var(--weiss); padding: 3px 7px; }
+.saison.jetzt { border-color: var(--schwarz); background: var(--gelb); }
+
+/* Kontakt */
+.kontakt { padding-block: 72px 0; }
+.kontakt-grid { display: grid; gap: 28px; align-items: start; }
+.kontakt .kopf { margin-bottom: 0; }
+.kontakt h2 { font-size: clamp(2.2rem, 6vw, 3.6rem); }
+.visitenkarte { background: var(--schwarz); color: var(--weiss); padding: 22px; display: grid; gap: 4px; box-shadow: 8px 8px 0 var(--gelb); min-width: 0; }
+.vk-kopf { display: flex; gap: 14px; align-items: center; padding-bottom: 14px; border-bottom: 1px solid #3a3536; margin-bottom: 6px; }
+.vk-kopf img { width: 40px; }
+.vk-kopf b { display: block; font: 900 2rem/1 var(--f-display); text-transform: uppercase; color: var(--gelb); }
+.vk-kopf span { font: 500 .7rem var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: #bdb7b8; }
+.vk-zeile { display: grid; grid-template-columns: 86px 1fr auto; gap: 10px; align-items: center; padding-block: 10px; border-bottom: 1px solid #3a3536; }
+.vk-zeile:last-child { border-bottom: 0; }
+.vk-zeile > span { font: 500 .68rem var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: #bdb7b8; }
+.vk-zeile a { font-weight: 700; text-decoration: none; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.vk-zeile a:hover { color: var(--gelb); }
+.kopieren { appearance: none; border: 1px solid #5a5354; background: transparent; color: var(--weiss); cursor: pointer; font: 500 .62rem var(--f-mono); letter-spacing: .1em; text-transform: uppercase; padding: 6px 8px; }
+.kopieren:hover { border-color: var(--gelb); color: var(--gelb); }
+@media (min-width: 820px) { .kontakt-grid { grid-template-columns: 1.3fr 1fr; gap: 56px; } }
+
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-wappen { animation: rein .7s cubic-bezier(.2,.9,.3,1.2) both; }
+  .hero h1 { animation: hoch .6s .1s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes rein { from { transform: translate(40px, -20px) rotate(8deg); opacity: .4; } }
+  @keyframes hoch { from { transform: translateY(24px); opacity: .3; } }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+</style>
+<style>[hidden]{display:none!important}body{margin:0}</style>
+</head>
+<body>
+
+
+<header class="top">
+  <div class="wrap">
+    <a class="marke" href="#start" aria-label="SV Brunnenfeld – zum Seitenanfang">
+      <img src="assets/wappen.svg" alt="" width="30" height="39">
+      <span>SV <b>Brunnenfeld</b></span>
+    </a>
+    <nav class="nav" aria-label="Hauptnavigation">
+      <a href="#news">News</a>
+      <a href="#wir">Wir</a>
+      <a href="#spiele">Spiele</a>
+      <a href="#anlage">Platz &amp; Klubheim</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <button class="menue-knopf" id="menue-knopf" aria-expanded="false" aria-controls="schublade"><i aria-hidden="true"></i>Menü</button>
+  </div>
+  <div class="schublade" id="schublade" hidden>
+    <div class="wrap">
+      <a href="#news">News</a>
+      <a href="#wir">Wer wir sind</a>
+      <a href="#spiele">Spiele &amp; Turniere</a>
+      <a href="#anlage">Platz &amp; Klubheim</a>
+      <a href="#kontakt">Kontakt</a>
+    </div>
+  </div>
+</header>
+
+<main id="start">
+  <div class="hero">
+    <div class="wrap">
+      <div class="hero-text">
+        <span class="kicker">Sektion Fußball · Dorfgemeinschaft Brunnenfeld</span>
+        <h1><span class="ueber">SV · seit 1969</span>Brunnen&shy;feld<em>.</em></h1>
+        <p class="hero-sub">Hobbyfußball in Bludenz-Brunnenfeld. Fair auf dem Platz, gesellig daneben.</p>
+      </div>
+      <div class="hero-wappen"><img src="assets/wappen.svg" alt="Wappen des SV Brunnenfeld: gelber Schild mit schwarzem Schrägband, Schriftzug SVB, Fußball und Jahreszahl 1969" width="300" height="387"></div>
+    </div>
+  </div>
+
+  <!-- ===================== NEWS =====================
+       Neue Meldung: einen <article class="meldung">-Block kopieren
+       und GANZ OBEN in .news-liste einfügen. Die ersten 3 werden
+       angezeigt, ältere rutschen automatisch unter "Ältere Meldungen". -->
+  <section id="news" class="news">
+    <div class="wrap">
+      <div class="news-kopf">
+        <h2>News</h2>
+        <span class="kicker">Aktuelles vom Platz</span>
+      </div>
+      <div class="news-liste" id="news-liste">
+        <article class="meldung">
+          <time datetime="2026-10-20"><b>20</b><span>Okt 2026</span></time>
+          <div>
+            <span class="rubrik">Training</span>
+            <h3>Ab November wieder in der Halle</h3>
+            <p>Die Sommersaison am Platz ist vorbei. Ab <span class="ph">3. November</span> trainieren wir wieder montags abends in der Halle.</p>
+          </div>
+        </article>
+        <article class="meldung">
+          <time datetime="2026-10-04"><b>04</b><span>Okt 2026</span></time>
+          <div>
+            <span class="rubrik rot">Spiel</span>
+            <h3>4:3 gegen <span class="ph">FC Beispielhausen</span></h3>
+            <p><span class="ph">Platzhalter:</span> Spannendes Freundschaftsspiel zum Saisonabschluss, danach gemeinsam gegrillt. Danke an die Gäste!</p>
+          </div>
+        </article>
+        <article class="meldung">
+          <time datetime="2026-09-12"><b>12</b><span>Sep 2026</span></time>
+          <div>
+            <span class="rubrik">Turnier</span>
+            <h3>3. Platz beim <span class="ph">Dorfturnier Beispiel</span></h3>
+            <p><span class="ph">Platzhalter:</span> Kleinfeld, 12 Teams, ein langer Tag und eine verdiente Bronzemedaille.</p>
+          </div>
+        </article>
+        <article class="meldung">
+          <time datetime="2026-08-01"><b>01</b><span>Aug 2026</span></time>
+          <div>
+            <span class="rubrik">Verein</span>
+            <h3>Unsere Homepage ist online</h3>
+            <p>Ab sofort gibt's hier Neuigkeiten, Ergebnisse und alles rund um die Sektion Fußball.</p>
+          </div>
+        </article>
+      </div>
+      <details class="aeltere" id="aeltere" hidden>
+        <summary>Ältere Meldungen</summary>
+        <div class="news-liste" id="news-alt"></div>
+      </details>
+      <p class="news-insta">Kurzfristiges wie Trainingsausfälle steht auf Instagram: <a href="https://www.instagram.com/svbrunnenfeld/" target="_blank" rel="noopener">@svbrunnenfeld</a></p>
+    </div>
+  </section>
+
+  <section id="wir" class="wir">
+    <div class="wrap wir-grid">
+      <div>
+        <div class="kopf">
+          <span class="kicker">Wer wir sind</span>
+          <h2>Hobbykicker aus Brunnenfeld</h2>
+        </div>
+        <div class="wir-text">
+          <p>Wir sind die Sektion Fußball der Dorfgemeinschaft Brunnenfeld. Bei uns spielen Hobbykicker zwischen 20 und 70 gemeinsam auf einem Platz, ohne Liga und ohne Tabellendruck.</p>
+          <p>Was zählt, ist Fairplay auf dem Platz und eine gute Gemeinschaft daneben. Ein Training ist bei uns erst vorbei, wenn auch die dritte Halbzeit gespielt ist.</p>
+          <p class="ph">Platzhalter: ein, zwei Sätze zur Geschichte seit 1969 – wer hat gegründet, was war früher anders?</p>
+        </div>
+      </div>
+      <aside class="alter" aria-label="Eckdaten">
+        <dl class="eck">
+          <div><dt>Gegründet</dt><dd>1969</dd></div>
+          <div><dt>Alter</dt><dd>20–70</dd></div>
+        </dl>
+        <div class="zeitstrahl" aria-hidden="true">
+          <div class="bahn"></div>
+          <div class="band" style="left:20%;right:30%"></div>
+          <div class="pin" style="left:20%">20</div>
+          <div class="pin" style="left:70%">70</div>
+          <div class="skala"><span>0</span><span>50</span><span>100</span></div>
+        </div>
+        <div class="training" id="training">
+          <h3>Training</h3>
+          <div class="saison" data-saison="sommer"><b>Sommer</b><span>Di &amp; Fr abends · Sportplatz Brunnenfeld</span><i hidden>Jetzt</i></div>
+          <div class="saison" data-saison="winter"><b>Winter</b><span>Mo abends · in der Halle</span><i hidden>Jetzt</i></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="werte" aria-labelledby="werte-h">
+    <div class="wrap">
+      <div class="kopf">
+        <span class="kicker">Worauf es uns ankommt</span>
+        <h2 id="werte-h">Fair. Gesellig. Gemeinsam.</h2>
+      </div>
+      <div class="werte-liste">
+        <article class="wert karte">
+          <span class="gk" aria-hidden="true"></span>
+          <span class="nr">Fairplay</span>
+          <h3>Einsatz ja, Härte nein</h3>
+          <p>Wir spielen mit Ehrgeiz, aber mit Respekt vor Gegner und Mitspielern. Gegen uns kommt man gern wieder.</p>
+        </article>
+        <article class="wert">
+          <span class="nr">Geselligkeit</span>
+          <h3>Die dritte Halbzeit</h3>
+          <p>Nach Training und Spiel sitzen wir im Klubheim zusammen, auch mit den Gästen. Das gehört für uns genauso dazu wie das Kicken.</p>
+        </article>
+        <article class="wert">
+          <span class="nr">Jung &amp; Alt</span>
+          <h3>Fünf Jahrzehnte im Team</h3>
+          <p>Zwischen dem Jüngsten und dem Ältesten liegen 50 Jahre. Wir stellen die Teams so, dass alle auf ihre Kosten kommen.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="spiele" id="spiele">
+    <div class="wrap">
+      <div class="kopf">
+        <span class="kicker">Spiele &amp; Turniere</span>
+        <h2>Wenn's mal zählt</h2>
+        <p>Wir spielen regelmäßig gegen befreundete Mannschaften und sind bei Kleinfeldturnieren in der Region dabei. Zuschauer sind bei Heimspielen herzlich willkommen.</p>
+      </div>
+      <div class="spiele-grid">
+        <div>
+          <h3 style="margin-bottom:8px">Freundschaftsspiele</h3>
+          <div class="ergebnisse">
+            <div class="erg"><span class="team svb">SVB</span><span class="stand ph">4:3</span><span class="team">FC Beispielhausen</span><span class="meta">Heim · Brunnenfeld · <span class="ph">04.10.2026</span></span></div>
+            <div class="erg"><span class="team">Altherren Musterdorf</span><span class="stand ph">2:2</span><span class="team svb">SVB</span><span class="meta">Auswärts · <span class="ph">TT.MM.JJJJ</span></span></div>
+            <div class="erg"><span class="team svb">SVB</span><span class="stand ph">1:5</span><span class="team">USV Platzhalter</span><span class="meta">Heim · Brunnenfeld · <span class="ph">TT.MM.JJJJ</span></span></div>
+          </div>
+        </div>
+        <div class="turniere">
+          <h3>Kleinfeldturniere</h3>
+          <div class="turnier" data-platz="3."><h3 class="ph">Dorfturnier Beispiel 2026</h3><p>Kleinfeld · 12 Teams · Bronze</p></div>
+          <div class="turnier" data-platz="7."><h3 class="ph">Sommer-Cup Platzhalter</h3><p>Kleinfeld · 16 Teams</p></div>
+          <div class="turnier" data-platz="?"><h3>Nächstes Turnier</h3><p>Termin folgt in den News</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="anlage">
+    <div class="wrap">
+      <div class="kopf">
+        <span class="kicker">Platz &amp; Klubheim</span>
+        <h2>Unser Zuhause</h2>
+        <p>Der Sportplatz gehört der Stadt Bludenz und ist von der Dorfgemeinschaft Brunnenfeld gepachtet. Tippe auf die Nummern im Plan. Fotos folgen, bis dahin zeigt die Skizze, wo was ist.</p>
+      </div>
+      <div class="anlage-grid">
+        <div class="feld-box">
+          <svg class="feld" viewBox="0 0 600 400" role="group" aria-label="Lageplan der Sportanlage (Skizze)">
+            <defs>
+              <pattern id="rasen" width="60" height="400" patternUnits="userSpaceOnUse">
+                <rect width="30" height="400" fill="#2f6b3a"/><rect x="30" width="30" height="400" fill="#357642"/>
+              </pattern>
+            </defs>
+            <rect x="0" y="0" width="600" height="400" fill="url(#rasen)"/>
+            <g fill="none" stroke="#FFFFFF" stroke-width="3" opacity=".9">
+              <rect x="30" y="30" width="400" height="300"/>
+              <line x1="230" y1="30" x2="230" y2="330"/>
+              <circle cx="230" cy="180" r="40"/>
+              <rect x="30" y="110" width="60" height="140"/>
+              <rect x="370" y="110" width="60" height="140"/>
+              <rect x="18" y="155" width="12" height="50"/>
+              <rect x="430" y="155" width="12" height="50"/>
+            </g>
+            <circle cx="230" cy="180" r="4" fill="#FFFFFF"/>
+            <rect x="470" y="40" width="110" height="130" fill="#FFF100" stroke="#231F20" stroke-width="3"/>
+            <path d="M470 40 L525 10 L580 40" fill="#231F20"/>
+            <text x="525" y="150" fill="#231F20" text-anchor="middle" style="font:800 16px 'Big Shoulders Display',sans-serif;letter-spacing:1px">KLUBHEIM</text>
+            <rect x="470" y="190" width="110" height="70" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="6 5"/>
+            <g stroke="#FFFFFF" stroke-width="2" opacity=".7"><line x1="470" y1="300" x2="580" y2="300"/><line x1="490" y1="300" x2="490" y2="370"/><line x1="520" y1="300" x2="520" y2="370"/><line x1="550" y1="300" x2="550" y2="370"/></g>
+            <text x="525" y="390" fill="#FFFFFF" text-anchor="middle" style="font:500 11px 'DM Mono',monospace;letter-spacing:1px" opacity=".8">P · SKIZZE</text>
+            <g class="pin" tabindex="0" role="button" data-ort="platz" aria-pressed="true" aria-label="1: Der Platz"><circle cx="150" cy="100" r="20"/><text x="150" y="101">1</text></g>
+            <g class="pin" tabindex="0" role="button" data-ort="heim" aria-pressed="false" aria-label="2: Das Klubheim"><circle cx="525" cy="95" r="20"/><text x="525" y="96">2</text></g>
+            <g class="pin" tabindex="0" role="button" data-ort="terrasse" aria-pressed="false" aria-label="3: Terrasse und Grill"><circle cx="525" cy="225" r="20"/><text x="525" y="226">3</text></g>
+          </svg>
+        </div>
+        <div class="orte">
+          <article class="ort-karte aktiv" data-karte="platz">
+            <div class="foto-folgt">Foto<br>folgt</div>
+            <div><h3>Der Platz <span>01</span></h3><p>Sportplatz Brunnenfeld, Pachtfläche der Stadt Bludenz. <span class="ph">Belag, Größe, Flutlicht ja/nein.</span></p></div>
+          </article>
+          <article class="ort-karte" data-karte="heim">
+            <div class="foto-folgt">Foto<br>folgt</div>
+            <div><h3>Das Klubheim <span>02</span></h3><p>Treffpunkt für die dritte Halbzeit. <span class="ph">Kabinen, Duschen? Seit wann? Selbst gebaut?</span></p></div>
+          </article>
+          <article class="ort-karte" data-karte="terrasse">
+            <div class="foto-folgt">Foto<br>folgt</div>
+            <div><h3>Terrasse &amp; Grill <span>03</span></h3><p><span class="ph">Platzhalter:</span> Hier wird nach dem Training gegrillt und aufs Spiel zurückgeschaut.</p></div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="kontakt" class="kontakt">
+    <div class="wrap kontakt-grid">
+      <div class="kopf">
+        <span class="kicker">Kontakt</span>
+        <h2>Anfragen an Sredi</h2>
+        <p>Für Freundschaftsspiele, Turniereinladungen und alle anderen Fragen ist unser Obmann und sportlicher Leiter der richtige Ansprechpartner. Wer gern mitspielen möchte, meldet sich bitte vorab bei ihm.</p>
+      </div>
+      <div class="visitenkarte">
+        <div class="vk-kopf">
+          <img src="assets/wappen.svg" alt="" width="40" height="52">
+          <div><b>Sredi</b><span>Obmann · Sportlicher Leiter</span></div>
+        </div>
+        <div class="vk-zeile">
+          <span>Telefon</span>
+          <a class="ph" href="tel:+436640000000" id="tel">+43 664 000 00 00</a>
+          <button type="button" class="kopieren" data-kopie="tel" aria-label="Telefonnummer kopieren">Kopieren</button>
+        </div>
+        <div class="vk-zeile">
+          <span>Instagram</span>
+          <a href="https://www.instagram.com/svbrunnenfeld/" target="_blank" rel="noopener">@svbrunnenfeld</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="streifen" aria-hidden="true"></div>
+  <div class="wrap">
+    <div style="display:grid;gap:12px">
+      <a class="marke" href="#start"><img src="assets/wappen.svg" alt="" width="30" height="39"><span>SV <b>Brunnenfeld</b> · 1969</span></a>
+      <p>Sektion Fußball der Dorfgemeinschaft Brunnenfeld · <span class="ph">Adresse</span>, 6700 Bludenz</p>
+    </div>
+    <nav aria-label="Rechtliches">
+      <a href="#impressum">Impressum</a>
+      <a href="#datenschutz">Datenschutz</a>
+      <a href="https://www.instagram.com/svbrunnenfeld/" target="_blank" rel="noopener">Instagram</a>
+    </nav>
+  </div>
+</footer>
+
+
+<div class="entwurf" aria-hidden="true">Entwurf · Platzhalter rot markiert</div>
+
+<script>
+(function () {
+  // Menü (Handy)
+  var knopf = document.getElementById('menue-knopf');
+  var lade = document.getElementById('schublade');
+  knopf.addEventListener('click', function () {
+    var auf = knopf.getAttribute('aria-expanded') === 'true';
+    knopf.setAttribute('aria-expanded', String(!auf));
+    lade.hidden = auf;
+  });
+  lade.addEventListener('click', function (e) {
+    if (e.target.closest('a')) { lade.hidden = true; knopf.setAttribute('aria-expanded', 'false'); }
+  });
+
+  // News: die neuesten 3 zeigen, Rest unter "Ältere Meldungen"
+  var SICHTBAR = 3;
+  var liste = document.getElementById('news-liste');
+  var alt = document.getElementById('news-alt');
+  var meldungen = Array.prototype.slice.call(liste.querySelectorAll('.meldung'));
+  if (meldungen.length > SICHTBAR) {
+    meldungen.slice(SICHTBAR).forEach(function (m) { alt.appendChild(m); });
+    document.getElementById('aeltere').hidden = false;
+  }
+
+  // Saison markieren: Sommer = Mai bis Oktober (anpassen, falls nötig)
+  var SOMMER_VON = 5, SOMMER_BIS = 10;
+  var m = new Date().getMonth() + 1;
+  var aktuell = (m >= SOMMER_VON && m <= SOMMER_BIS) ? 'sommer' : 'winter';
+  var s = document.querySelector('.saison[data-saison="' + aktuell + '"]');
+  if (s) { s.classList.add('jetzt'); s.querySelector('i').hidden = false; }
+
+  // Telefonnummer kopieren
+  document.querySelectorAll('.kopieren').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var el = document.getElementById(b.dataset.kopie);
+      var text = el.textContent.trim();
+      var fertig = function () { b.textContent = 'Kopiert'; setTimeout(function () { b.textContent = 'Kopieren'; }, 1800); };
+      var auswahl = function () { var r = document.createRange(); r.selectNodeContents(el); var sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(fertig, auswahl);
+      } else { auswahl(); }
+    });
+  });
+
+  // Lageplan-Pins
+  var pins = document.querySelectorAll('.feld .pin');
+  function waehle(ort) {
+    pins.forEach(function (p) { p.setAttribute('aria-pressed', String(p.dataset.ort === ort)); });
+    document.querySelectorAll('.ort-karte').forEach(function (k) { k.classList.toggle('aktiv', k.dataset.karte === ort); });
+  }
+  pins.forEach(function (p) {
+    p.addEventListener('click', function () { waehle(p.dataset.ort); });
+    p.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); waehle(p.dataset.ort); } });
+  });
+  document.querySelectorAll('.ort-karte').forEach(function (k) {
+    k.addEventListener('click', function () { waehle(k.dataset.karte); });
+  });
+
+  // aktiver Menüpunkt
+  var links = document.querySelectorAll('.nav a');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting) links.forEach(function (a) { a.setAttribute('aria-current', String(a.getAttribute('href') === '#' + e.target.id)); });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    document.querySelectorAll('main section[id]').forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+
+
+</body>
+</html>
